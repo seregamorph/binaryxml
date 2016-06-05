@@ -1,5 +1,7 @@
 package ru.eport.bxml;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -25,19 +27,19 @@ public abstract class TagType<T> {
         this.type = type;
         this.name = name;
 
-        if (type == VOID_TYPE) {
-            // VOID is an exception
-            return;
+        // todo move it to factory static method
+        if (type != VOID_TYPE) {
+            if (type < TAG_TYPE_MIN || type > TAG_TYPE_MAX) {
+                throw new RuntimeException("Illegal type: " + Utils.toHexString(type));
+            }
+            if (TAG_TYPE_MAP.containsKey(type)) {
+                throw new RuntimeException("Duplicate type key: " + Utils.toHexString(type));
+            }
+            TAG_TYPE_MAP.put(type, this);
         }
-        if (type < TAG_TYPE_MIN || type > TAG_TYPE_MAX) {
-            throw new RuntimeException("Illegal type: " + Utils.toHexString(type));
-        }
-        if (TAG_TYPE_MAP.containsKey(type)) {
-            throw new RuntimeException("Duplicate type key: " + Utils.toHexString(type));
-        }
-        TAG_TYPE_MAP.put(type, this);
     }
 
+    @NotNull
     static TagType<?> getTagType(int type) throws SerializeException {
         TagType<?> tagType = TAG_TYPE_MAP.get(type);
         if (tagType == null) {
@@ -313,11 +315,9 @@ public abstract class TagType<T> {
         Integer convert(TagType fromTagType, Object value) throws SerializeException {
             if (fromTagType == BYTE) {
                 return BYTE.castValue(value).intValue();
-            }
-            if (fromTagType == SHORT) {
+            } else if (fromTagType == SHORT) {
                 return SHORT.castValue(value).intValue();
-            }
-            if (fromTagType == LONG) {
+            } else if (fromTagType == LONG) {
                 return LONG.castValue(value).intValue();
             }
             return super.convert(fromTagType, value);
@@ -471,9 +471,7 @@ public abstract class TagType<T> {
 
         @Override
         Integer readValue(DataInputStream dis) throws IOException {
-            int ch1 = Utils.readUByte(dis);
-            int ch2 = Utils.readUByte(dis);
-            return ((ch1 << 8) + ch2);
+            return (int) dis.readShort();
         }
 
         @Override

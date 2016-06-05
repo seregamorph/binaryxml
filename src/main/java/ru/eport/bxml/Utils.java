@@ -17,6 +17,7 @@ class Utils {
     }
 
     static String toHexString(int value) {
+        // todo fix it
         return "0x" + toHexString(new byte[]{(byte) value});
     }
 
@@ -58,18 +59,5 @@ class Utils {
             throw new EOFException();
         }
         return ch;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(toHexString(new byte[]{0x00, 0x01, (byte) 0xfe, (byte) 0xff}));
-
-        System.out.println(toUnsignedByte((byte) 0x00));
-        System.out.println(toUnsignedByte((byte) 0x01));
-        System.out.println(toUnsignedByte((byte) 0xff));
-
-        System.out.println(toUnsignedShort((short) 0x00));
-        System.out.println(toUnsignedShort((short) 0xff));
-        System.out.println(toUnsignedShort((short) 0xffff));
-        System.out.println(toUnsignedShort((short) -0xffff));
     }
 }

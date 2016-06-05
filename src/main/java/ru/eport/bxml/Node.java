@@ -11,9 +11,9 @@ public class Node<T> {
     private final T value;
 
     // todo подумать о структуре с хеш-таблицей
-    private Node firstChild;
-    private Node lastChild;
-    private Node nextNode;
+    private Node<?> firstChild;
+    private Node<?> lastChild;
+    private Node<?> nextNode;
 
     Node(TagName<T> name, T value, boolean checkValue) {
         this.name = name;
@@ -21,13 +21,12 @@ public class Node<T> {
 
         // null не проверяем
         // если это распарсенное значение, проверку делать не нужно
-        if (value == null || !checkValue) {
-            return;
-        }
-        TagType<T> tagType = name.getTagType();
-        if (tagType != null) {
-            if (!tagType.checkValueConstraint(value)) {
-                throw new IllegalArgumentException("Illegal node value: " + tagType.toString(value));
+        if (value != null && checkValue) {
+            TagType<T> tagType = name.getTagType();
+            if (tagType != null) {
+                if (!tagType.checkValueConstraint(value)) {
+                    throw new IllegalArgumentException("Illegal node value: " + tagType.toString(value));
+                }
             }
         }
     }
@@ -40,7 +39,7 @@ public class Node<T> {
         this(name, value, true);
     }
 
-    public void addChild(Node child) {
+    public void addChild(Node<?> child) {
         if (firstChild == null) {
             firstChild = child;
             lastChild = child;
@@ -226,6 +225,7 @@ public class Node<T> {
     private class ChildIter implements Iter<Node> {
         private Node current = ITERATOR_INITIAL_NODE;
 
+        @Override
         public Node next() {
             if (current == ITERATOR_INITIAL_NODE) {
                 return current = firstChild;
@@ -244,7 +244,7 @@ public class Node<T> {
      * @return указатель на итератор
      */
     public <K> Iter<Node<K>> iterChild(TagName<K> tagName) {
-        return new ChildIterByName<K>(tagName);
+        return new ChildIterByName<>(tagName);
     }
 
     /**
@@ -261,6 +261,7 @@ public class Node<T> {
             this.childTagName = childTagName;
         }
 
+        @Override
         @SuppressWarnings({"unchecked"})
         public Node<K> next() {
             if (current == ITERATOR_INITIAL_NODE) {

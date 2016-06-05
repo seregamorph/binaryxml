@@ -1,5 +1,7 @@
 package ru.eport.bxml;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -9,8 +11,8 @@ import java.util.List;
 public class Parser {
     private static final int MAX_LEVEL = 16;
 
-    private static Node parse(TagNameSet tagNameSet, DataInputStream dis, TagName tagName, int level, boolean allowConvert)
-            throws IOException, SerializeException {
+    private static Node parse(TagNameSet tagNameSet, DataInputStream dis, @Nullable TagName<?> tagName,
+                              int level, boolean allowConvert) throws IOException, SerializeException {
         if (level > MAX_LEVEL) {
             throw new SerializeException("Too deep structure. Max level is " + MAX_LEVEL);
         }
@@ -71,7 +73,7 @@ public class Parser {
                 Node childNode = parse(tagNameSet, dis, childNodeName, level + 1, allowConvert);
 
                 if (childNodes == null) {
-                    childNodes = new ArrayList<Node<?>>(4);
+                    childNodes = new ArrayList<>(4);
                 }
 
                 childNodes.add(childNode);

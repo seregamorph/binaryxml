@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 public abstract class TagNameSet {
     protected final Logger logger = Logger.getLogger(getClass().getName());
 
-    private final Map<Integer, TagName<?>> tagNamesMap = new HashMap<Integer, TagName<?>>();
+    private final Map<Integer, TagName<?>> tagNamesMap = new HashMap<>();
 
     /**
      * @param type
@@ -17,8 +17,8 @@ public abstract class TagNameSet {
      * @return
      * @throws IllegalArgumentException
      */
-    protected final <T> TagName<T> createTagName(int type, TagType<T> tagType,
-                                                 String name) throws IllegalArgumentException {
+    protected final <T> TagName<T> createTagName(int type, TagType<T> tagType, String name)
+            throws IllegalArgumentException {
         if (tagType == null) {
             throw new IllegalArgumentException("tagType is null");
         }
@@ -28,7 +28,7 @@ public abstract class TagNameSet {
         if (tagNamesMap.containsKey(type)) {
             throw new IllegalArgumentException("Node names map already contains type: " + Utils.toHexString(type));
         }
-        TagName<T> nodeName = new TagName<T>(type, tagType, name, true);
+        TagName<T> nodeName = new TagName<>(type, tagType, name, true);
         tagNamesMap.put(type, nodeName);
         return nodeName;
     }
@@ -40,6 +40,6 @@ public abstract class TagNameSet {
         }
         String name = Utils.toHexString(type);
         logger.warning("Undefined tag name type: " + name);
-        return new TagName<Void>(type, TagType.VOID, name, false);
+        return new TagName<>(type, TagType.VOID, name, false);
     }
 }
