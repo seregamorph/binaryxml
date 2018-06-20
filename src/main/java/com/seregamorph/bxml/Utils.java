@@ -1,4 +1,4 @@
-package ru.eport.bxml;
+package com.seregamorph.bxml;
 
 import java.io.DataInputStream;
 import java.io.EOFException;

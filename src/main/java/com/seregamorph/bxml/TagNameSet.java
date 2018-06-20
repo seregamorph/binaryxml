@@ -1,4 +1,4 @@
-package ru.eport.bxml;
+package com.seregamorph.bxml;
 
 import java.util.HashMap;
 import java.util.Map;

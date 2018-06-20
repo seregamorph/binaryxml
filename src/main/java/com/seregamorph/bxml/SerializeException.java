@@ -1,4 +1,4 @@
-package ru.eport.bxml;
+package com.seregamorph.bxml;
 
 public class SerializeException extends BXmlException {
     public SerializeException(String message) {

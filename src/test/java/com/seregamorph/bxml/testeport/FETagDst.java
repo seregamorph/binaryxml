@@ -1,12 +1,18 @@
-package ru.eport.bxml;
+package com.seregamorph.bxml.testeport;
 
-public final class FETagSrc extends TagNameSet {
-    private static final FETagSrc instance = new FETagSrc();
+import com.seregamorph.bxml.TagName;
+import com.seregamorph.bxml.TagNameSet;
+import com.seregamorph.bxml.TagType;
 
-    private FETagSrc() {
+import java.util.Date;
+
+public final class FETagDst extends TagNameSet {
+    private static final FETagDst instance = new FETagDst();
+
+    private FETagDst() {
     }
 
-    public static FETagSrc getInstance() {
+    public static FETagDst getInstance() {
         return instance;
     }
 
@@ -16,12 +22,14 @@ public final class FETagSrc extends TagNameSet {
 
     public static final TagName<Void> PACKAGE = tagName(0x01, TagType.VOID, "package");
     public static final TagName<Void> HEADER = tagName(0x02, TagType.VOID, "header");
-    public static final TagName<Long> TIME = tagName(0x03, TagType.LONG, "time");
+    // имеет тип LONG в src
+    public static final TagName<Date> TIME = tagName(0x03, TagType.UNIX_TIME, "time");
     public static final TagName<String> VERSION = tagName(0x04, TagType.UTF8, "version");
     public static final TagName<Long> DIR = tagName(0x05, TagType.LONG, "dir");
     public static final TagName<Integer> POINT = tagName(0x06, TagType.INT, "point");
     public static final TagName<Long> CARD = tagName(0x07, TagType.LONG, "card");
-    public static final TagName<String> PIN = tagName(0x08, TagType.UTF8, "pin");
+    // отсутствует в dst
+    //public static final TagName<String> PIN = tagName(0x08, TagType.UTF8, "pin");
     public static final TagName<Void> OPERATION = tagName(0x09, TagType.VOID, "operation");
     public static final TagName<String> ID = tagName(0x0A, TagType.UTF8, "id");
     public static final TagName<Integer> HASH = tagName(0x0B, TagType.INT, "hash");
@@ -36,5 +44,4 @@ public final class FETagSrc extends TagNameSet {
     public static final TagName<String> PRIMARY = tagName(0x14, TagType.UTF8, "primary");
     public static final TagName<Void> OPTION = tagName(0x15, TagType.VOID, "option");
     public static final TagName<String> NAME = tagName(0x16, TagType.UTF8, "name");
-
 }

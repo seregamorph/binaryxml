@@ -1,10 +1,8 @@
-package ru.eport.bxml;
+package com.seregamorph.bxml;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,20 +90,17 @@ public class Parser {
         return node;
     }
 
-    public static Node<?> parseXML(TagNameSet tagNameSet, DataInputStream dis, boolean allowConvert)
-            throws IOException, SerializeException {
+    public static Node<?> parseXML(TagNameSet tagNameSet, InputStream is, boolean allowConvert) throws IOException, SerializeException {
+        DataInputStream dis = is instanceof DataInputStream ? (DataInputStream) is : new DataInputStream(is);
         return parse(tagNameSet, dis, null, 0, allowConvert);
     }
 
-    public static Node<?> parseXML(TagNameSet tagNameSet, byte[] bytes, int off, int len, boolean allowConvert)
-            throws IOException, SerializeException {
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes, off, len);
-        DataInputStream dis = new DataInputStream(bais);
-        return parse(tagNameSet, dis, null, 0, allowConvert);
-    }
-
-    public static Node<?> parseXML(TagNameSet tagNameSet, byte[] bytes, boolean allowConvert)
-            throws IOException, SerializeException {
-        return parseXML(tagNameSet, bytes, 0, bytes.length, allowConvert);
+    public static Node<?> parseXML(TagNameSet tagNameSet, byte[] bytes, boolean allowConvert) throws SerializeException {
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        try {
+            return parseXML(tagNameSet, bais, allowConvert);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

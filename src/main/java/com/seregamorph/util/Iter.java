@@ -1,4 +1,4 @@
-package ru.eport.util;
+package com.seregamorph.util;
 
 /**
  * Упрощенный итератор для коллекций, не разрешающих элементов null.

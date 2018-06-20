@@ -1,10 +1,11 @@
-package ru.eport.bxml;
+package com.seregamorph.bxml;
 
-import ru.eport.util.Iter;
+import com.seregamorph.util.Iter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.TestOnly;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 public class Node<T> {
     private final TagName<T> name;
@@ -39,6 +40,10 @@ public class Node<T> {
         this(name, value, true);
     }
 
+    public static <K> Node<K> node(TagName<K> name) {
+        return new Node<>(name);
+    }
+
     public void addChild(Node<?> child) {
         if (firstChild == null) {
             firstChild = child;
@@ -50,8 +55,18 @@ public class Node<T> {
         }
     }
 
+    public Node<T> set(Node<?> node) {
+        addChild(node);
+        return this;
+    }
+
+    public <K> Node<T> set(TagName<K> name, K value) {
+        addChild(name, value);
+        return this;
+    }
+
     public <K> Node<K> addChild(TagName<K> name, K value) {
-        Node<K> child = new Node<K>(name, value);
+        Node<K> child = new Node<>(name, value);
         addChild(child);
         return child;
     }
@@ -78,7 +93,21 @@ public class Node<T> {
         return value;
     }
 
+    @TestOnly
+    @Nullable
+    public Node<?> findChild(int tagName) {
+        Node node = firstChild;
+        while (node != null) {
+            if (node.name.getType() == tagName) {
+                return node;
+            }
+            node = node.nextNode;
+        }
+        return null;
+    }
+
     @SuppressWarnings({"unchecked"})
+    @Nullable
     public <K> Node<K> findChild(TagName<K> name) {
         Node node = firstChild;
         while (node != null) {
@@ -90,6 +119,7 @@ public class Node<T> {
         return null;
     }
 
+    @NotNull
     public <K> Node<K> getChild(TagName<K> name) throws NodeNotFoundException {
         Node<K> node = findChild(name);
         if (node == null) {
@@ -110,7 +140,7 @@ public class Node<T> {
     private String toStringImpl(int level, boolean full, boolean printTypes) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < level; i++) {
-            sb.append("\t");
+            sb.append("    ");
         }
         sb.append("<").append(name.getName());
         if (printTypes || !name.isPredefined()) {
@@ -135,7 +165,7 @@ public class Node<T> {
 
         if (!emptyChild) {
             for (int i = 0; i < level; i++) {
-                sb.append("\t");
+                sb.append("    ");
             }
         }
 
@@ -176,14 +206,28 @@ public class Node<T> {
         return toStringImpl(0, full, printTypes);
     }
 
-    @SuppressWarnings({"unchecked"})
-    public void serialize(DataOutputStream dos, boolean allowOptimize) throws IOException, SerializeException {
+    public byte[] serialize(boolean allowOptimize) throws SerializeException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            serialize(baos, allowOptimize);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return baos.toByteArray();
+    }
+
+    public void serialize(OutputStream os, boolean allowOptimize) throws IOException, SerializeException {
+        DataOutputStream dos = os instanceof DataOutputStream ? (DataOutputStream) os : new DataOutputStream(os);
+        serializeImpl(dos, allowOptimize);
+    }
+
+    private void serializeImpl(DataOutputStream dos, boolean allowOptimize) throws IOException, SerializeException {
         // node name
         dos.write(name.getType());
 
         // node value
         if (value != null) {
-            TagType tagType = name.getTagType();
+            TagType<T> tagType = name.getTagType();
             if (tagType == null) {
                 throw new RuntimeException("undefined serializer for node " + name.getName());
             }
@@ -193,7 +237,7 @@ public class Node<T> {
         // child nodes
         Node child = firstChild;
         while (child != null) {
-            child.serialize(dos, allowOptimize);
+            child.serializeImpl(dos, allowOptimize);
             child = child.nextNode;
         }
 
@@ -204,7 +248,7 @@ public class Node<T> {
     public byte[] toByteArray(boolean allowOptimize) throws SerializeException, IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
         DataOutputStream dos = new DataOutputStream(baos);
-        serialize(dos, allowOptimize);
+        serializeImpl(dos, allowOptimize);
         return baos.toByteArray();
     }
 

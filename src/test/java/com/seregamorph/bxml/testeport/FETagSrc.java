@@ -1,14 +1,16 @@
-package ru.eport.bxml;
+package com.seregamorph.bxml.testeport;
 
-import java.util.Date;
+import com.seregamorph.bxml.TagName;
+import com.seregamorph.bxml.TagNameSet;
+import com.seregamorph.bxml.TagType;
 
-public final class FETagDst extends TagNameSet {
-    private static final FETagDst instance = new FETagDst();
+public final class FETagSrc extends TagNameSet {
+    private static final FETagSrc instance = new FETagSrc();
 
-    private FETagDst() {
+    private FETagSrc() {
     }
 
-    public static FETagDst getInstance() {
+    public static FETagSrc getInstance() {
         return instance;
     }
 
@@ -18,7 +20,7 @@ public final class FETagDst extends TagNameSet {
 
     public static final TagName<Void> PACKAGE = tagName(0x01, TagType.VOID, "package");
     public static final TagName<Void> HEADER = tagName(0x02, TagType.VOID, "header");
-    public static final TagName<Date> TIME = tagName(0x03, TagType.UNIX_TIME, "time");
+    public static final TagName<Long> TIME = tagName(0x03, TagType.LONG, "time");
     public static final TagName<String> VERSION = tagName(0x04, TagType.UTF8, "version");
     public static final TagName<Long> DIR = tagName(0x05, TagType.LONG, "dir");
     public static final TagName<Integer> POINT = tagName(0x06, TagType.INT, "point");
@@ -38,4 +40,5 @@ public final class FETagDst extends TagNameSet {
     public static final TagName<String> PRIMARY = tagName(0x14, TagType.UTF8, "primary");
     public static final TagName<Void> OPTION = tagName(0x15, TagType.VOID, "option");
     public static final TagName<String> NAME = tagName(0x16, TagType.UTF8, "name");
+
 }

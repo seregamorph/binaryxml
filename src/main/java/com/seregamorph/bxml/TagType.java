@@ -1,4 +1,4 @@
-package ru.eport.bxml;
+package com.seregamorph.bxml;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +21,7 @@ public abstract class TagType<T> {
     private final int type;
     private final String name;
 
-    private static final Map<Integer, TagType<?>> TAG_TYPE_MAP = new HashMap<Integer, TagType<?>>();
+    private static final Map<Integer, TagType<?>> TAG_TYPE_MAP = new HashMap<>();
 
     private TagType(int type, String name) {
         this.type = type;

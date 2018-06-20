@@ -1,4 +1,4 @@
-package ru.eport.bxml;
+package com.seregamorph.bxml;
 
 public class BXmlException extends RuntimeException {
     public BXmlException(String message) {

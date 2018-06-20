@@ -1,4 +1,4 @@
-package ru.eport.bxml;
+package com.seregamorph.bxml;
 
 public final class TagName<T> {
     private static final int TYPE_TAG_NAME_MIN = 0x01;
@@ -55,10 +55,5 @@ public final class TagName<T> {
 
     static boolean isCloseTag(int type) {
         return CLOSE_TAG == type;
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public Node<T> castNode(Node node) {
-        return node;
     }
 }
